@@ -1,0 +1,265 @@
+{
+  "models": {
+    "openai": {
+      "gpt-4o": {
+        "context_window": 128000,
+        "max_output_tokens": 16384,
+        "input_price_per_1m_tokens": 2.50,
+        "output_price_per_1m_tokens": 10.00,
+        "description": "Most advanced multimodal flagship model",
+        "supports_vision": true,
+        "supports_function_calling": true
+      },
+      "gpt-4o-mini": {
+        "context_window": 128000,
+        "max_output_tokens": 16384,
+        "input_price_per_1m_tokens": 0.15,
+        "output_price_per_1m_tokens": 0.60,
+        "description": "Affordable small model for fast, lightweight tasks",
+        "supports_vision": true,
+        "supports_function_calling": true
+      },
+      "gpt-4-turbo": {
+        "context_window": 128000,
+        "max_output_tokens": 4096,
+        "input_price_per_1m_tokens": 10.00,
+        "output_price_per_1m_tokens": 30.00,
+        "description": "Previous generation high-intelligence model",
+        "supports_vision": true,
+        "supports_function_calling": true
+      },
+      "gpt-4": {
+        "context_window": 8192,
+        "max_output_tokens": 8192,
+        "input_price_per_1m_tokens": 30.00,
+        "output_price_per_1m_tokens": 60.00,
+        "description": "Original GPT-4 model",
+        "supports_vision": false,
+        "supports_function_calling": true
+      },
+      "gpt-3.5-turbo": {
+        "context_window": 16385,
+        "max_output_tokens": 4096,
+        "input_price_per_1m_tokens": 0.50,
+        "output_price_per_1m_tokens": 1.50,
+        "description": "Fast, inexpensive model for simple tasks",
+        "supports_vision": false,
+        "supports_function_calling": true
+      },
+      "o1": {
+        "context_window": 200000,
+        "max_output_tokens": 100000,
+        "input_price_per_1m_tokens": 15.00,
+        "output_price_per_1m_tokens": 60.00,
+        "description": "Reasoning model for complex tasks",
+        "supports_vision": true,
+        "supports_function_calling": false
+      },
+      "o1-mini": {
+        "context_window": 128000,
+        "max_output_tokens": 65536,
+        "input_price_per_1m_tokens": 3.00,
+        "output_price_per_1m_tokens": 12.00,
+        "description": "Faster and cheaper reasoning model",
+        "supports_vision": false,
+        "supports_function_calling": false
+      }
+    },
+    "anthropic": {
+      "claude-3.5-sonnet": {
+        "context_window": 200000,
+        "max_output_tokens": 8192,
+        "input_price_per_1m_tokens": 3.00,
+        "output_price_per_1m_tokens": 15.00,
+        "description": "Most intelligent model",
+        "supports_vision": true,
+        "supports_function_calling": true
+      },
+      "claude-3-opus": {
+        "context_window": 200000,
+        "max_output_tokens": 4096,
+        "input_price_per_1m_tokens": 15.00,
+        "output_price_per_1m_tokens": 75.00,
+        "description": "Powerful model for highly complex tasks",
+        "supports_vision": true,
+        "supports_function_calling": true
+      },
+      "claude-3-sonnet": {
+        "context_window": 200000,
+        "max_output_tokens": 4096,
+        "input_price_per_1m_tokens": 3.00,
+        "output_price_per_1m_tokens": 15.00,
+        "description": "Balance of intelligence and speed",
+        "supports_vision": true,
+        "supports_function_calling": true
+      },
+      "claude-3-haiku": {
+        "context_window": 200000,
+        "max_output_tokens": 4096,
+        "input_price_per_1m_tokens": 0.25,
+        "output_price_per_1m_tokens": 1.25,
+        "description": "Fastest and most compact model",
+        "supports_vision": true,
+        "supports_function_calling": true
+      }
+    },
+    "google": {
+      "gemini-1.5-pro": {
+        "context_window": 2000000,
+        "max_output_tokens": 8192,
+        "input_price_per_1m_tokens": 1.25,
+        "output_price_per_1m_tokens": 5.00,
+        "description": "Mid-size multimodal model for scaling tasks",
+        "supports_vision": true,
+        "supports_function_calling": true
+      },
+      "gemini-1.5-flash": {
+        "context_window": 1000000,
+        "max_output_tokens": 8192,
+        "input_price_per_1m_tokens": 0.075,
+        "output_price_per_1m_tokens": 0.30,
+        "description": "Fast and versatile multimodal model",
+        "supports_vision": true,
+        "supports_function_calling": true
+      },
+      "gemini-1.5-flash-8b": {
+        "context_window": 1000000,
+        "max_output_tokens": 8192,
+        "input_price_per_1m_tokens": 0.0375,
+        "output_price_per_1m_tokens": 0.15,
+        "description": "High volume and lower intelligence tasks",
+        "supports_vision": true,
+        "supports_function_calling": true
+      },
+      "gemini-1.0-pro": {
+        "context_window": 32760,
+        "max_output_tokens": 8192,
+        "input_price_per_1m_tokens": 0.50,
+        "output_price_per_1m_tokens": 1.50,
+        "description": "Natural language tasks, multi-turn chat, code generation",
+        "supports_vision": false,
+        "supports_function_calling": true
+      }
+    },
+    "meta": {
+      "llama-3.1-405b": {
+        "context_window": 128000,
+        "max_output_tokens": 4096,
+        "input_price_per_1m_tokens": 5.00,
+        "output_price_per_1m_tokens": 15.00,
+        "description": "Largest and most capable Llama model",
+        "supports_vision": false,
+        "supports_function_calling": true,
+        "open_source": true
+      },
+      "llama-3.1-70b": {
+        "context_window": 128000,
+        "max_output_tokens": 4096,
+        "input_price_per_1m_tokens": 0.80,
+        "output_price_per_1m_tokens": 0.80,
+        "description": "Cost-effective model for diverse tasks",
+        "supports_vision": false,
+        "supports_function_calling": true,
+        "open_source": true
+      },
+      "llama-3.1-8b": {
+        "context_window": 128000,
+        "max_output_tokens": 4096,
+        "input_price_per_1m_tokens": 0.20,
+        "output_price_per_1m_tokens": 0.20,
+        "description": "Lightweight model for simple tasks",
+        "supports_vision": false,
+        "supports_function_calling": true,
+        "open_source": true
+      }
+    },
+    "mistral": {
+      "mistral-large": {
+        "context_window": 128000,
+        "max_output_tokens": 8192,
+        "input_price_per_1m_tokens": 2.00,
+        "output_price_per_1m_tokens": 6.00,
+        "description": "Top-tier reasoning for complex tasks",
+        "supports_vision": false,
+        "supports_function_calling": true
+      },
+      "mistral-medium": {
+        "context_window": 32000,
+        "max_output_tokens": 8192,
+        "input_price_per_1m_tokens": 2.70,
+        "output_price_per_1m_tokens": 8.10,
+        "description": "Ideal for intermediate tasks",
+        "supports_vision": false,
+        "supports_function_calling": true
+      },
+      "mistral-small": {
+        "context_window": 32000,
+        "max_output_tokens": 8192,
+        "input_price_per_1m_tokens": 0.20,
+        "output_price_per_1m_tokens": 0.60,
+        "description": "Cost-efficient reasoning for simple tasks",
+        "supports_vision": false,
+        "supports_function_calling": true
+      },
+      "mistral-7b": {
+        "context_window": 32000,
+        "max_output_tokens": 8192,
+        "input_price_per_1m_tokens": 0.25,
+        "output_price_per_1m_tokens": 0.25,
+        "description": "Open source model for experimentation",
+        "supports_vision": false,
+        "supports_function_calling": true,
+        "open_source": true
+      }
+    },
+    "cohere": {
+      "command-r-plus": {
+        "context_window": 128000,
+        "max_output_tokens": 4096,
+        "input_price_per_1m_tokens": 3.00,
+        "output_price_per_1m_tokens": 15.00,
+        "description": "Most powerful model for complex RAG and tool use",
+        "supports_vision": false,
+        "supports_function_calling": true
+      },
+      "command-r": {
+        "context_window": 128000,
+        "max_output_tokens": 4096,
+        "input_price_per_1m_tokens": 0.50,
+        "output_price_per_1m_tokens": 1.50,
+        "description": "Scalable model for RAG and tool use",
+        "supports_vision": false,
+        "supports_function_calling": true
+      },
+      "command": {
+        "context_window": 4096,
+        "max_output_tokens": 4096,
+        "input_price_per_1m_tokens": 1.00,
+        "output_price_per_1m_tokens": 2.00,
+        "description": "Instruction-following conversational model",
+        "supports_vision": false,
+        "supports_function_calling": true
+      },
+      "command-light": {
+        "context_window": 4096,
+        "max_output_tokens": 4096,
+        "input_price_per_1m_tokens": 0.30,
+        "output_price_per_1m_tokens": 0.60,
+        "description": "Faster and smaller model for simpler tasks",
+        "supports_vision": false,
+        "supports_function_calling": true
+      }
+    }
+  },
+  "metadata": {
+    "last_updated": "2025-12-26",
+    "currency": "USD",
+    "notes": [
+      "Prices are per 1 million tokens",
+      "Context windows are measured in tokens",
+      "Prices and features may vary by region and usage tier",
+      "Some models may have additional costs for specific features",
+      "Open source models may have different pricing when hosted on various platforms"
+    ]
+  }
+}
