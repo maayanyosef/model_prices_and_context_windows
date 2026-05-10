@@ -1,815 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Model Prices & Context Windows Browser</title>
-    <style>
-        :root {
-            --primary-color: #2563eb;
-            --secondary-color: #1e40af;
-            --background: #f8fafc;
-            --card-background: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border-color: #e2e8f0;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: var(--background);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 40px 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            font-size: 1.1rem;
-            opacity: 0.95;
-        }
-
-        .stats-bar {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .stat-card {
-            background: var(--card-background);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .stat-card h3 {
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-
-        .stat-card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .controls {
-            background: var(--card-background);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            margin-bottom: 30px;
-        }
-
-        .control-row {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-
-        .control-row:last-child {
-            margin-bottom: 0;
-        }
-
-        .control-group {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
-
-        input[type="text"],
-        select {
-            width: 100%;
-            padding: 10px 15px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: border-color 0.2s;
-        }
-
-        input[type="text"]:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        .checkbox-group {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .checkbox-item label {
-            margin: 0;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .view-toggle {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .view-btn {
-            padding: 10px 20px;
-            border: 2px solid var(--border-color);
-            background: var(--card-background);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .view-btn.active {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        .loading {
-            text-align: center;
-            padding: 60px;
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-        }
-
-        .models-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .model-card {
-            background: var(--card-background);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .model-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-        }
-
-        .model-card h3 {
-            color: var(--primary-color);
-            margin-bottom: 12px;
-            font-size: 1.1rem;
-            word-break: break-word;
-        }
-
-        .model-info {
-            display: grid;
-            gap: 8px;
-            font-size: 0.9rem;
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .info-row:last-child {
-            border-bottom: none;
-        }
-
-        .info-label {
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .info-value {
-            color: var(--text-primary);
-            font-weight: 600;
-            text-align: right;
-        }
-
-        .badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 12px;
-        }
-
-        .badge {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .badge.vision { background: var(--success-color); }
-        .badge.tools { background: var(--warning-color); }
-        .badge.audio { background: #8b5cf6; }
-        .badge.reasoning { background: #ec4899; }
-
-        .table-view {
-            display: none;
-            background: var(--card-background);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .table-view.active {
-            display: block;
-        }
-
-        .models-grid.active {
-            display: grid;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            background: var(--background);
-            font-weight: 600;
-            color: var(--text-primary);
-            position: sticky;
-            top: 0;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        th:hover {
-            background: #e2e8f0;
-        }
-
-        th.sorted-asc::after {
-            content: ' ↑';
-        }
-
-        th.sorted-desc::after {
-            content: ' ↓';
-        }
-
-        tr:hover {
-            background: var(--background);
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 60px;
-            color: var(--text-secondary);
-        }
-
-        .no-results h2 {
-            margin-bottom: 10px;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--border-color);
-            margin-top: 40px;
-        }
-
-        .footer a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.8rem;
-            }
-
-            .models-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .control-row {
-                flex-direction: column;
-            }
-
-            table {
-                font-size: 0.85rem;
-            }
-
-            th, td {
-                padding: 8px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Model Browser</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-    <header>
-        <div class="container">
-            <h1>🤖 AI Model Browser</h1>
-            <p>Explore pricing, context windows, and capabilities of AI models across providers</p>
-        </div>
-    </header>
+<body data-theme="light" data-density="balanced" data-unit="1m">
 
-    <div class="container">
-        <div class="stats-bar" id="statsBar">
-            <div class="stat-card">
-                <h3 id="totalModels">-</h3>
-                <p>Total Models</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="filteredModels">-</h3>
-                <p>Filtered Results</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="providerCount">-</h3>
-                <p>Providers</p>
-            </div>
-        </div>
-
-        <div class="controls">
-            <div class="control-row">
-                <div class="control-group">
-                    <label for="searchInput">🔍 Search Models</label>
-                    <input type="text" id="searchInput" placeholder="Search by name, provider...">
-                </div>
-                <div class="control-group">
-                    <label for="providerFilter">Provider</label>
-                    <select id="providerFilter">
-                        <option value="">All Providers</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label for="modeFilter">Mode</label>
-                    <select id="modeFilter">
-                        <option value="">All Modes</option>
-                        <option value="chat">Chat</option>
-                        <option value="embedding">Embedding</option>
-                        <option value="image_generation">Image Generation</option>
-                        <option value="audio_transcription">Audio Transcription</option>
-                        <option value="audio_speech">Audio Speech</option>
-                        <option value="rerank">Rerank</option>
-                    </select>
-                </div>
-            </div>
-            <div class="control-row">
-                <div class="control-group">
-                    <label>Capabilities</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="visionFilter">
-                            <label for="visionFilter">Vision</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="toolsFilter">
-                            <label for="toolsFilter">Function Calling</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="reasoningFilter">
-                            <label for="reasoningFilter">Reasoning</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="cachingFilter">
-                            <label for="cachingFilter">Prompt Caching</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="view-toggle">
-            <button class="view-btn active" onclick="switchView('grid')">📱 Card View</button>
-            <button class="view-btn" onclick="switchView('table')">📊 Table View</button>
-        </div>
-
-        <div id="loadingIndicator" class="loading">
-            Loading models...
-        </div>
-
-        <div id="modelsGrid" class="models-grid active" style="display: none;">
-            <!-- Model cards will be inserted here -->
-        </div>
-
-        <div id="tableView" class="table-view">
-            <table>
-                <thead>
-                    <tr>
-                        <th onclick="sortTable('name')">Model Name</th>
-                        <th onclick="sortTable('provider')">Provider</th>
-                        <th onclick="sortTable('mode')">Mode</th>
-                        <th onclick="sortTable('input_cost')">Input Cost/Token</th>
-                        <th onclick="sortTable('output_cost')">Output Cost/Token</th>
-                        <th onclick="sortTable('max_tokens')">Max Tokens</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <!-- Table rows will be inserted here -->
-                </tbody>
-            </table>
-        </div>
-
-        <div id="noResults" class="no-results" style="display: none;">
-            <h2>No models found</h2>
-            <p>Try adjusting your filters or search term</p>
-        </div>
-
-        <footer class="footer">
-            <p>Data provided as-is for informational purposes. Verify with official provider documentation.</p>
-            <p><a href="https://github.com/maayanyosef/model_prices_and_context_windows" target="_blank">View on GitHub</a></p>
-        </footer>
+  <!-- ====== Top Nav ====== -->
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#browse">
+        <span class="brand-mark"></span>
+        <span class="brand-text">Models</span>
+      </a>
+      <nav class="nav-tabs" id="navTabs">
+        <button class="tab active" data-view="browse">Browse</button>
+        <button class="tab" data-view="leaderboards">Leaderboards</button>
+        <button class="tab" data-view="calculator">Calculator</button>
+        <button class="tab" data-view="matrix">Matrix</button>
+      </nav>
+      <div class="nav-actions">
+        <button class="kbar-trigger" id="kbarTrigger" aria-label="Jump to search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <span>Search</span>
+          <kbd>⌘K</kbd>
+        </button>
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
     </div>
+  </header>
 
-    <script>
-        let allModels = {};
-        let filteredModels = {};
-        let currentView = 'grid';
-        let sortColumn = null;
-        let sortDirection = 'asc';
+  <main id="main">
 
-        // Load and initialize
-        async function loadModels() {
-            try {
-                const response = await fetch('model_prices_and_context_windows.json');
-                allModels = await response.json();
-                
-                // Remove sample_spec entry
-                delete allModels.sample_spec;
-                
-                populateProviderFilter();
-                updateStats();
-                filterModels();
-            } catch (error) {
-                console.error('Error loading models:', error);
-                document.getElementById('loadingIndicator').textContent = 
-                    'Error loading model data. Please try again later.';
-            }
-        }
+    <!-- ============ BROWSE VIEW ============ -->
+    <section class="view view-browse" data-view="browse">
 
-        function populateProviderFilter() {
-            const providers = new Set();
-            Object.values(allModels).forEach(model => {
-                if (model.litellm_provider) {
-                    providers.add(model.litellm_provider);
-                }
-            });
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-eyebrow"><span class="dot"></span> <span id="modelCountTag">— models</span> from <span id="providerCountTag">—</span> providers</div>
+        <h1 class="hero-title">Find the right model.<br/><span class="muted">Compare price, context, and capability.</span></h1>
+        <div class="hero-search-wrap">
+          <div class="hero-search">
+            <svg class="hero-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input id="heroSearch" type="text" placeholder="Try “claude”, “gpt-5”, “vision”, “cheap embedding”…" autocomplete="off" />
+            <button class="hero-clear" id="heroClear" aria-label="Clear">✕</button>
+          </div>
+          <div class="hero-suggest" id="heroSuggest" hidden></div>
+        </div>
+        <div class="hero-chips" id="heroChips">
+          <button class="chip" data-chip="vision">⊙ Vision</button>
+          <button class="chip" data-chip="tools">⌘ Tool calling</button>
+          <button class="chip" data-chip="reasoning">∿ Reasoning</button>
+          <button class="chip" data-chip="caching">◫ Prompt cache</button>
+          <button class="chip" data-chip="big">∞ &gt; 200K context</button>
+          <button class="chip" data-chip="cheap">$ Under $1 / 1M in</button>
+        </div>
+      </div>
 
-            const select = document.getElementById('providerFilter');
-            Array.from(providers).sort().forEach(provider => {
-                const option = document.createElement('option');
-                option.value = provider;
-                option.textContent = provider;
-                select.appendChild(option);
-            });
-        }
+      <!-- Filters bar -->
+      <div class="filters">
+        <div class="filters-left">
+          <select id="providerFilter" class="select">
+            <option value="">All providers</option>
+          </select>
+          <select id="modeFilter" class="select">
+            <option value="">All modes</option>
+          </select>
+          <select id="sortBy" class="select">
+            <option value="featured">Featured</option>
+            <option value="name">Name A–Z</option>
+            <option value="input_asc">Input cost ↑</option>
+            <option value="input_desc">Input cost ↓</option>
+            <option value="output_asc">Output cost ↑</option>
+            <option value="context_desc">Context ↓</option>
+          </select>
+        </div>
+        <div class="filters-right">
+          <span class="result-count" id="resultCount">—</span>
+          <div class="view-switch" role="tablist" aria-label="View">
+            <button class="vs active" data-mode="cards" aria-label="Cards">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            </button>
+            <button class="vs" data-mode="table" aria-label="Table">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
 
-        function updateStats() {
-            document.getElementById('totalModels').textContent = Object.keys(allModels).length;
-            
-            const providers = new Set();
-            Object.values(allModels).forEach(model => {
-                if (model.litellm_provider) {
-                    providers.add(model.litellm_provider);
-                }
-            });
-            document.getElementById('providerCount').textContent = providers.size;
-        }
+      <!-- Results -->
+      <div id="cardsView" class="cards-grid"></div>
+      <div id="tableView" class="table-wrap" hidden>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th data-sort="name">Model</th>
+              <th data-sort="provider">Provider</th>
+              <th data-sort="mode">Mode</th>
+              <th data-sort="input_asc" class="num">Input / 1M</th>
+              <th data-sort="output_asc" class="num">Output / 1M</th>
+              <th data-sort="context_desc" class="num">Context</th>
+              <th>Capabilities</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
 
-        function filterModels() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const provider = document.getElementById('providerFilter').value;
-            const mode = document.getElementById('modeFilter').value;
-            const needsVision = document.getElementById('visionFilter').checked;
-            const needsTools = document.getElementById('toolsFilter').checked;
-            const needsReasoning = document.getElementById('reasoningFilter').checked;
-            const needsCaching = document.getElementById('cachingFilter').checked;
+      <div id="emptyState" class="empty" hidden>
+        <div class="empty-glyph">⌕</div>
+        <h3>No models match.</h3>
+        <p>Try removing a filter or searching for something more general.</p>
+        <button class="btn-ghost" id="emptyReset">Reset filters</button>
+      </div>
 
-            filteredModels = {};
+      <div class="pagination" id="pagination" hidden>
+        <button id="loadMore" class="btn-pill">Load more</button>
+        <span id="showingMeta" class="muted small"></span>
+      </div>
+    </section>
 
-            for (const [name, info] of Object.entries(allModels)) {
-                // Search filter
-                if (searchTerm && !name.toLowerCase().includes(searchTerm) && 
-                    !(info.litellm_provider || '').toLowerCase().includes(searchTerm)) {
-                    continue;
-                }
+    <!-- ============ LEADERBOARDS VIEW ============ -->
+    <section class="view view-leaderboards" data-view="leaderboards" hidden>
+      <div class="section-head">
+        <h2>Leaderboards</h2>
+        <p class="muted">Top models by category. Filter by mode to compare like-for-like.</p>
+        <div class="lb-mode-filter">
+          <button class="seg active" data-lbmode="chat">Chat</button>
+          <button class="seg" data-lbmode="embedding">Embedding</button>
+          <button class="seg" data-lbmode="image_generation">Image</button>
+          <button class="seg" data-lbmode="audio_transcription">Audio</button>
+        </div>
+      </div>
+      <div class="leaderboard-grid" id="leaderboardGrid"></div>
+    </section>
 
-                // Provider filter
-                if (provider && info.litellm_provider !== provider) {
-                    continue;
-                }
+    <!-- ============ CALCULATOR VIEW ============ -->
+    <section class="view view-calculator" data-view="calculator" hidden>
+      <div class="section-head">
+        <h2>Cost calculator</h2>
+        <p class="muted">Estimate the cost of a workload across multiple models.</p>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs card">
+          <div class="calc-row">
+            <label>Input tokens</label>
+            <div class="range-row">
+              <input type="range" id="calcIn" min="0" max="10000000" step="1000" value="100000" />
+              <input type="number" id="calcInNum" value="100000" />
+            </div>
+          </div>
+          <div class="calc-row">
+            <label>Output tokens</label>
+            <div class="range-row">
+              <input type="range" id="calcOut" min="0" max="10000000" step="1000" value="20000" />
+              <input type="number" id="calcOutNum" value="20000" />
+            </div>
+          </div>
+          <div class="calc-row">
+            <label>Calls per month</label>
+            <div class="range-row">
+              <input type="range" id="calcCalls" min="1" max="1000000" step="100" value="1000" />
+              <input type="number" id="calcCallsNum" value="1000" />
+            </div>
+          </div>
+          <div class="calc-row">
+            <label>Models</label>
+            <div class="calc-models" id="calcModelChips"></div>
+            <button class="btn-ghost small" id="calcAddModel">+ Add model</button>
+          </div>
+        </div>
+        <div class="calc-output card">
+          <h3>Estimated monthly cost</h3>
+          <div id="calcResults" class="calc-results"></div>
+        </div>
+      </div>
+    </section>
 
-                // Mode filter
-                if (mode && info.mode !== mode) {
-                    continue;
-                }
+    <!-- ============ MATRIX VIEW ============ -->
+    <section class="view view-matrix" data-view="matrix" hidden>
+      <div class="section-head">
+        <h2>Capability matrix</h2>
+        <p class="muted">Which providers ship which capabilities. Click a cell to see matching models.</p>
+      </div>
+      <div class="matrix-wrap">
+        <table class="matrix" id="matrixTable"></table>
+      </div>
+    </section>
 
-                // Capability filters
-                if (needsVision && !info.supports_vision) continue;
-                if (needsTools && !info.supports_function_calling) continue;
-                if (needsReasoning && !info.supports_reasoning) continue;
-                if (needsCaching && !info.supports_prompt_caching) continue;
+  </main>
 
-                filteredModels[name] = info;
-            }
+  <!-- ====== Compare tray ====== -->
+  <div class="compare-tray" id="compareTray" hidden>
+    <div class="ct-inner">
+      <div class="ct-title"><b id="ctCount">0</b> pinned to compare</div>
+      <div class="ct-chips" id="ctChips"></div>
+      <div class="ct-actions">
+        <button class="btn-ghost small" id="ctClear">Clear</button>
+        <button class="btn-primary small" id="ctOpen">Compare →</button>
+      </div>
+    </div>
+  </div>
 
-            document.getElementById('filteredModels').textContent = Object.keys(filteredModels).length;
-            renderModels();
-        }
+  <!-- ====== Compare modal ====== -->
+  <div class="modal" id="compareModal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel compare-panel">
+      <div class="modal-head">
+        <h2>Compare</h2>
+        <button class="icon-btn" data-close aria-label="Close">✕</button>
+      </div>
+      <div class="compare-grid" id="compareGrid"></div>
+    </div>
+  </div>
 
-        function renderModels() {
-            document.getElementById('loadingIndicator').style.display = 'none';
-            
-            if (Object.keys(filteredModels).length === 0) {
-                document.getElementById('modelsGrid').style.display = 'none';
-                document.getElementById('tableView').style.display = 'none';
-                document.getElementById('noResults').style.display = 'block';
-                return;
-            }
+  <!-- ====== Model detail modal ====== -->
+  <div class="modal" id="detailModal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel detail-panel">
+      <div class="modal-head">
+        <div>
+          <div class="muted small" id="detailProvider"></div>
+          <h2 id="detailName"></h2>
+        </div>
+        <button class="icon-btn" data-close aria-label="Close">✕</button>
+      </div>
+      <div id="detailBody" class="detail-body"></div>
+    </div>
+  </div>
 
-            document.getElementById('noResults').style.display = 'none';
-            
-            if (currentView === 'grid') {
-                renderCardView();
-            } else {
-                renderTableView();
-            }
-        }
+  <!-- (Command palette removed — search is inline in the hero) -->
 
-        function renderCardView() {
-            const grid = document.getElementById('modelsGrid');
-            grid.innerHTML = '';
-            grid.style.display = 'grid';
+  <!-- ====== Tweaks panel (hidden by default) ====== -->
+  <div class="tweaks" id="tweaksPanel" hidden>
+    <div class="tweaks-head">
+      <strong>Tweaks</strong>
+      <button class="icon-btn small" id="tweaksClose" aria-label="Close">✕</button>
+    </div>
+    <div class="tweaks-body">
+      <div class="tweak-row">
+        <label>Theme</label>
+        <div class="seg-group" data-tweak="theme">
+          <button class="seg active" data-value="light">Light</button>
+          <button class="seg" data-value="dark">Dark</button>
+        </div>
+      </div>
+      <div class="tweak-row">
+        <label>Density</label>
+        <div class="seg-group" data-tweak="density">
+          <button class="seg" data-value="compact">Compact</button>
+          <button class="seg active" data-value="balanced">Balanced</button>
+          <button class="seg" data-value="spacious">Spacious</button>
+        </div>
+      </div>
+      <div class="tweak-row">
+        <label>Price unit</label>
+        <div class="seg-group" data-tweak="unit">
+          <button class="seg" data-value="1k">per 1K</button>
+          <button class="seg active" data-value="1m">per 1M</button>
+        </div>
+      </div>
+      <div class="tweak-row">
+        <label>Accent</label>
+        <div class="seg-group swatch-group" data-tweak="accent">
+          <button class="swatch active" data-value="blue" style="background:#0071e3"></button>
+          <button class="swatch" data-value="graphite" style="background:#1d1d1f"></button>
+          <button class="swatch" data-value="indigo" style="background:#5e5ce6"></button>
+          <button class="swatch" data-value="green" style="background:#30d158"></button>
+        </div>
+      </div>
+      <div class="tweak-row">
+        <label>Default sort</label>
+        <select id="tweakSort" class="select">
+          <option value="featured">Featured</option>
+          <option value="name">Name A–Z</option>
+          <option value="input_asc">Input cost ↑</option>
+          <option value="output_asc">Output cost ↑</option>
+          <option value="context_desc">Context ↓</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-            for (const [name, info] of Object.entries(filteredModels)) {
-                const card = createModelCard(name, info);
-                grid.appendChild(card);
-            }
-        }
+  <!-- Tweak defaults -->
+  <script>
+    window.__TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "theme": "light",
+      "density": "balanced",
+      "unit": "1m",
+      "accent": "blue",
+      "defaultSort": "featured"
+    }/*EDITMODE-END*/;
+  </script>
 
-        function createModelCard(name, info) {
-            const card = document.createElement('div');
-            card.className = 'model-card';
-
-            const title = document.createElement('h3');
-            title.textContent = name;
-            card.appendChild(title);
-
-            const infoDiv = document.createElement('div');
-            infoDiv.className = 'model-info';
-
-            // Provider
-            if (info.litellm_provider) {
-                infoDiv.appendChild(createInfoRow('Provider', info.litellm_provider));
-            }
-
-            // Mode
-            if (info.mode) {
-                infoDiv.appendChild(createInfoRow('Mode', info.mode));
-            }
-
-            // Input cost
-            if (info.input_cost_per_token !== undefined) {
-                const cost = (info.input_cost_per_token * 1000000).toFixed(2);
-                infoDiv.appendChild(createInfoRow('Input Cost', `$${cost}/1M tokens`));
-            }
-
-            // Output cost
-            if (info.output_cost_per_token !== undefined) {
-                const cost = (info.output_cost_per_token * 1000000).toFixed(2);
-                infoDiv.appendChild(createInfoRow('Output Cost', `$${cost}/1M tokens`));
-            }
-
-            // Max tokens
-            if (info.max_input_tokens) {
-                infoDiv.appendChild(createInfoRow('Max Input', info.max_input_tokens.toLocaleString()));
-            }
-            if (info.max_output_tokens) {
-                infoDiv.appendChild(createInfoRow('Max Output', info.max_output_tokens.toLocaleString()));
-            }
-
-            card.appendChild(infoDiv);
-
-            // Badges for capabilities
-            const badges = document.createElement('div');
-            badges.className = 'badges';
-
-            if (info.supports_vision) {
-                badges.appendChild(createBadge('Vision', 'vision'));
-            }
-            if (info.supports_function_calling) {
-                badges.appendChild(createBadge('Tools', 'tools'));
-            }
-            if (info.supports_audio_input || info.supports_audio_output) {
-                badges.appendChild(createBadge('Audio', 'audio'));
-            }
-            if (info.supports_reasoning) {
-                badges.appendChild(createBadge('Reasoning', 'reasoning'));
-            }
-
-            if (badges.children.length > 0) {
-                card.appendChild(badges);
-            }
-
-            return card;
-        }
-
-        function createInfoRow(label, value) {
-            const row = document.createElement('div');
-            row.className = 'info-row';
-
-            const labelSpan = document.createElement('span');
-            labelSpan.className = 'info-label';
-            labelSpan.textContent = label;
-
-            const valueSpan = document.createElement('span');
-            valueSpan.className = 'info-value';
-            valueSpan.textContent = value;
-
-            row.appendChild(labelSpan);
-            row.appendChild(valueSpan);
-
-            return row;
-        }
-
-        function createBadge(text, className) {
-            const badge = document.createElement('span');
-            badge.className = `badge ${className}`;
-            badge.textContent = text;
-            return badge;
-        }
-
-        function renderTableView() {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-
-            for (const [name, info] of Object.entries(filteredModels)) {
-                const row = document.createElement('tr');
-
-                row.innerHTML = `
-                    <td>${name}</td>
-                    <td>${info.litellm_provider || '-'}</td>
-                    <td>${info.mode || '-'}</td>
-                    <td>${info.input_cost_per_token ? `$${(info.input_cost_per_token * 1000000).toFixed(3)}` : '-'}</td>
-                    <td>${info.output_cost_per_token ? `$${(info.output_cost_per_token * 1000000).toFixed(3)}` : '-'}</td>
-                    <td>${info.max_input_tokens ? info.max_input_tokens.toLocaleString() : (info.max_tokens || '-')}</td>
-                `;
-
-                tbody.appendChild(row);
-            }
-
-            document.getElementById('tableView').style.display = 'block';
-        }
-
-        function switchView(view) {
-            currentView = view;
-            
-            document.querySelectorAll('.view-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            if (view === 'grid') {
-                document.getElementById('modelsGrid').classList.add('active');
-                document.getElementById('tableView').classList.remove('active');
-            } else {
-                document.getElementById('modelsGrid').classList.remove('active');
-                document.getElementById('tableView').classList.add('active');
-            }
-
-            renderModels();
-        }
-
-        function sortTable(column) {
-            if (sortColumn === column) {
-                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-            } else {
-                sortColumn = column;
-                sortDirection = 'asc';
-            }
-
-            // Update column headers
-            document.querySelectorAll('th').forEach(th => {
-                th.classList.remove('sorted-asc', 'sorted-desc');
-            });
-            event.target.classList.add(`sorted-${sortDirection}`);
-
-            const entries = Object.entries(filteredModels);
-            
-            entries.sort((a, b) => {
-                let aVal, bVal;
-
-                switch(column) {
-                    case 'name':
-                        aVal = a[0];
-                        bVal = b[0];
-                        break;
-                    case 'provider':
-                        aVal = a[1].litellm_provider || '';
-                        bVal = b[1].litellm_provider || '';
-                        break;
-                    case 'mode':
-                        aVal = a[1].mode || '';
-                        bVal = b[1].mode || '';
-                        break;
-                    case 'input_cost':
-                        aVal = a[1].input_cost_per_token || Infinity;
-                        bVal = b[1].input_cost_per_token || Infinity;
-                        break;
-                    case 'output_cost':
-                        aVal = a[1].output_cost_per_token || Infinity;
-                        bVal = b[1].output_cost_per_token || Infinity;
-                        break;
-                    case 'max_tokens':
-                        aVal = a[1].max_input_tokens || a[1].max_tokens || 0;
-                        bVal = b[1].max_input_tokens || b[1].max_tokens || 0;
-                        break;
-                }
-
-                if (typeof aVal === 'string') {
-                    return sortDirection === 'asc' 
-                        ? aVal.localeCompare(bVal)
-                        : bVal.localeCompare(aVal);
-                } else {
-                    return sortDirection === 'asc' 
-                        ? aVal - bVal
-                        : bVal - aVal;
-                }
-            });
-
-            filteredModels = Object.fromEntries(entries);
-            renderTableView();
-        }
-
-        // Event listeners
-        document.getElementById('searchInput').addEventListener('input', filterModels);
-        document.getElementById('providerFilter').addEventListener('change', filterModels);
-        document.getElementById('modeFilter').addEventListener('change', filterModels);
-        document.getElementById('visionFilter').addEventListener('change', filterModels);
-        document.getElementById('toolsFilter').addEventListener('change', filterModels);
-        document.getElementById('reasoningFilter').addEventListener('change', filterModels);
-        document.getElementById('cachingFilter').addEventListener('change', filterModels);
-
-        // Initialize
-        loadModels();
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
