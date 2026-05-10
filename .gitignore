@@ -1,1 +1,4 @@
 .idea/
+demo/node_modules/
+demo/out/
+demo/.cache/

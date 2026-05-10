@@ -1,228 +1,145 @@
-# Model Prices and Context Windows
+# AI Model Prices & Context Windows
 
-A comprehensive database of AI model pricing, context windows, and capabilities across various providers.
+[![Live site](https://img.shields.io/github/deployments/maayanyosef/model_prices_and_context_windows/github-pages?label=live%20site&logo=githubpages&logoColor=white)](https://maayanyosef.github.io/model_prices_and_context_windows/)
+[![Last commit](https://img.shields.io/github/last-commit/maayanyosef/model_prices_and_context_windows?logo=github&logoColor=white)](https://github.com/maayanyosef/model_prices_and_context_windows/commits/main)
+[![Models](https://img.shields.io/badge/models-2%2C707-0071e3?logo=openai&logoColor=white)](./model_prices_and_context_windows.json)
+[![Synced from LiteLLM](https://img.shields.io/badge/synced%20from-BerriAI%2Flitellm-FF6F00?logo=github&logoColor=white)](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json)
+[![Demo: Remotion](https://img.shields.io/badge/demo-Remotion-1c2128?logo=react&logoColor=61dafb)](https://github.com/remotion-dev/remotion)
+[![Stars](https://img.shields.io/github/stars/maayanyosef/model_prices_and_context_windows?style=flat&logo=github&logoColor=white)](https://github.com/maayanyosef/model_prices_and_context_windows/stargazers)
 
-## 🌐 Interactive Web Interface
+A searchable, comparable database of **2,700+ AI models** — pricing, context windows, capabilities, and modes — synced from [BerriAI/litellm](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) and paired with a static-site browser you can open in any tab.
 
-**[View the interactive model browser →](https://maayanyosef.github.io/model_prices_and_context_windows/)**
+![Demo](./demo.gif)
 
-Browse, search, and filter models with an easy-to-use web interface.
+> **Live browser →** https://maayanyosef.github.io/model_prices_and_context_windows/
+> **Data file →** [`model_prices_and_context_windows.json`](./model_prices_and_context_windows.json)
+> **Demo source →** [`demo/`](./demo) (Remotion)
 
-## 📊 Overview
+---
 
-This repository contains detailed information about AI models from multiple providers including:
-- Pricing (input/output costs per token, image, audio, etc.)
-- Context window sizes (max input/output tokens)
-- Model capabilities (function calling, vision, audio, etc.)
-- Provider information (OpenAI, Anthropic, AWS Bedrock, Google, etc.)
-- Deprecation dates and supported regions
+## What's inside
 
-## 📁 Data Structure
+This repo is two things shipped together:
 
-The main data file is `model_prices_and_context_windows.json`, which contains a JSON object where:
-- **Keys**: Model identifiers (e.g., `gpt-4`, `claude-3-opus-20240229`)
-- **Values**: Objects containing model metadata
+1. **A JSON dataset** mirroring LiteLLM's [`model_prices_and_context_window.json`](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) — schema-compatible, drop-in usable in any tooling that already speaks LiteLLM. Top-level object keyed by model id (e.g. `gpt-5`, `claude-opus-4-5`, `gemini-2.5-pro`).
+2. **A zero-build static browser** (`index.html` + `app.js` + `styles.css`) deployed via GitHub Pages. Vanilla HTML/CSS/JS, no framework, no bundler — the page fetches the JSON next to it and renders the UI.
 
-### Common Fields
+## Features (browser)
 
-| Field                   | Description            | Example                                       |
-|-------------------------|------------------------|-----------------------------------------------|
-| `litellm_provider`      | The LLM provider       | `"openai"`, `"anthropic"`, `"bedrock"`        |
-| `mode`                  | Model type             | `"chat"`, `"embedding"`, `"image_generation"` |
-| `max_tokens`            | Maximum context window | `128000`                                      |
-| `max_input_tokens`      | Maximum input tokens   | `128000`                                      |
-| `max_output_tokens`     | Maximum output tokens  | `4096`                                        |
-| `input_cost_per_token`  | Cost per input token   | `0.000003`                                    |
-| `output_cost_per_token` | Cost per output token  | `0.000015`                                    |
+The live site is more than a table — it's a small, opinionated comparison tool:
 
-### Capability Fields (boolean)
+- **Search & filter** — type-ahead search, filter by provider, mode, and capability chips (vision, tool calling, reasoning, prompt caching, large context, low cost).
+- **Stats dashboard** — at-a-glance highlights: total models, providers, cheapest chat input, biggest context window, most-capable model.
+- **Card and table views** — toggle layouts; sort by price, output cost, or context.
+- **Side-by-side compare tray** — pin up to four models, open a comparison modal with per-field "best" highlights.
+- **Leaderboards** — per-mode rankings (cheapest input, cheapest output, biggest context, best-value vision, reasoning, largest output).
+- **Cost calculator** — plug in monthly input/output tokens and call volume, get estimated cost across the models you care about. State persists in `localStorage`.
+- **Capability matrix** — provider × capability grid; click a cell to drill down.
+- **Tweaks** — light/dark theme, balanced/compact/spacious density, price units per 1K or per 1M, accent color, default sort. Persisted in `localStorage`.
 
-- `supports_function_calling` - Tool/function calling support
-- `supports_vision` - Image input support
-- `supports_audio_input` - Audio input support
-- `supports_audio_output` - Audio output support
-- `supports_system_messages` - System message support
-- `supports_prompt_caching` - Prompt caching support
-- `supports_reasoning` - Chain-of-thought reasoning support
-- `supports_response_schema` - Structured output support
-- `supports_web_search` - Web search capabilities
+## Try it
 
-### Cost Fields by Type
+**Easiest:** open [the live site](https://maayanyosef.github.io/model_prices_and_context_windows/).
 
-**Token-based**:
-- `input_cost_per_token`
-- `output_cost_per_token`
-- `cache_creation_input_token_cost`
-- `cache_read_input_token_cost`
-- `output_cost_per_reasoning_token`
+**Locally:** the page uses `fetch()` on a relative path, so `file://` won't work. Serve it instead:
 
-**Media-based**:
-- `input_cost_per_image`
-- `output_cost_per_image`
-- `input_cost_per_audio_token`
-- `input_cost_per_second` (audio transcription)
-- `input_cost_per_video_per_second`
+```bash
+git clone https://github.com/maayanyosef/model_prices_and_context_windows.git
+cd model_prices_and_context_windows
+python3 -m http.server 8000
+# open http://localhost:8000
+```
 
-**Other**:
-- `file_search_cost_per_1k_calls`
-- `file_search_cost_per_gb_per_day`
-- `vector_store_cost_per_gb_per_day`
-
-## 💻 Usage Examples
+## Using the data
 
 ### Python
 
 ```python
 import json
 
-# Load the data
-with open('model_prices_and_context_windows.json', 'r') as f:
+with open("model_prices_and_context_windows.json") as f:
     models = json.load(f)
 
-# Find all chat models from OpenAI
-openai_chat_models = {
-    name: info for name, info in models.items()
-    if info.get('litellm_provider') == 'openai' and info.get('mode') == 'chat'
-}
-
-# Calculate cost for 1M tokens
-model_name = 'gpt-4'
-model = models[model_name]
-input_cost = model['input_cost_per_token'] * 1_000_000
-output_cost = model['output_cost_per_token'] * 1_000_000
-print(f"{model_name} - Input: ${input_cost:.2f}, Output: ${output_cost:.2f} per 1M tokens")
+# Cheapest chat model with vision support
+candidates = [
+    (name, info) for name, info in models.items()
+    if info.get("mode") == "chat"
+    and info.get("supports_vision")
+    and info.get("input_cost_per_token")
+]
+name, info = min(candidates, key=lambda kv: kv[1]["input_cost_per_token"])
+print(f"{name}: ${info['input_cost_per_token'] * 1_000_000:.2f} per 1M input tokens")
 ```
 
-### JavaScript
+### JavaScript / TypeScript
 
-```javascript
-// Fetch and use the data
-fetch('model_prices_and_context_windows.json')
-  .then(response => response.json())
-  .then(models => {
-    // Filter models with vision support
-    const visionModels = Object.entries(models)
-      .filter(([_, info]) => info.supports_vision)
-      .map(([name, _]) => name);
-    
-    console.log('Vision-capable models:', visionModels);
-  });
-```
-
-### TypeScript
-
-```typescript
-interface ModelInfo {
+```ts
+type ModelInfo = {
   litellm_provider?: string;
   mode?: string;
-  max_tokens?: number;
   max_input_tokens?: number;
   max_output_tokens?: number;
   input_cost_per_token?: number;
   output_cost_per_token?: number;
-  supports_function_calling?: boolean;
   supports_vision?: boolean;
+  supports_function_calling?: boolean;
   supports_reasoning?: boolean;
-  // ... other fields
-}
+  // ...many more in sample_spec
+};
 
-type ModelsDatabase = Record<string, ModelInfo>;
+const res = await fetch("./model_prices_and_context_windows.json");
+const models: Record<string, ModelInfo> = await res.json();
 
-// Load and type the data
-import modelsData from './model_prices_and_context_windows.json';
-const models: ModelsDatabase = modelsData;
-
-// Find cheapest chat model
-const chatModels = Object.entries(models)
-  .filter(([_, info]) => info.mode === 'chat' && info.input_cost_per_token)
-  .sort((a, b) => a[1].input_cost_per_token! - b[1].input_cost_per_token!);
-
-console.log('Cheapest chat model:', chatModels[0][0]);
+const visionAndTools = Object.entries(models)
+  .filter(([, m]) => m.supports_vision && m.supports_function_calling);
 ```
 
-## 🔍 Example Queries
+> `sample_spec` is a documentation entry, not a real model — exclude it (`delete models.sample_spec`) before iterating.
 
-### Find models with specific capabilities
+## Data schema (highlights)
 
-```python
-# Models with both vision and function calling
-vision_and_tools = [
-    name for name, info in models.items()
-    if info.get('supports_vision') and info.get('supports_function_calling')
-]
+| Field                                                                                                                                                                                                                                                 | Meaning                                                                                                                         |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| `litellm_provider`                                                                                                                                                                                                                                    | Provider key (e.g. `openai`, `anthropic`, `bedrock`, `vertex_ai`).                                                              |
+| `mode`                                                                                                                                                                                                                                                | `chat`, `embedding`, `image_generation`, `audio_transcription`, `audio_speech`, `completion`, `moderation`, `rerank`, `search`. |
+| `max_input_tokens` / `max_output_tokens` / `max_tokens`                                                                                                                                                                                               | Context window limits.                                                                                                          |
+| `input_cost_per_token` / `output_cost_per_token`                                                                                                                                                                                                      | USD per token (very small floats; use scientific notation in PRs).                                                              |
+| `cache_creation_input_token_cost` / `cache_read_input_token_cost`                                                                                                                                                                                     | Prompt caching pricing.                                                                                                         |
+| `output_cost_per_reasoning_token`                                                                                                                                                                                                                     | Reasoning token surcharge.                                                                                                      |
+| `input_cost_per_image` / `output_cost_per_image`                                                                                                                                                                                                      | Image-mode pricing.                                                                                                             |
+| `input_cost_per_second`                                                                                                                                                                                                                               | Audio-transcription pricing.                                                                                                    |
+| `supports_function_calling`, `supports_vision`, `supports_audio_input`, `supports_audio_output`, `supports_reasoning`, `supports_prompt_caching`, `supports_response_schema`, `supports_web_search`, `supports_pdf_input`, `supports_system_messages` | Capability booleans.                                                                                                            |
+| `deprecation_date`                                                                                                                                                                                                                                    | `YYYY-MM-DD` when relevant.                                                                                                     |
 
-# Models with >100K context window
-large_context = [
-    name for name, info in models.items()
-    if info.get('max_input_tokens', 0) > 100000
-]
+For the full field reference open the JSON and look at the `sample_spec` entry — it documents every supported field.
 
-# Most cost-effective embedding models
-embeddings = sorted(
-    [(name, info.get('input_cost_per_token', float('inf'))) 
-     for name, info in models.items() 
-     if info.get('mode') == 'embedding'],
-    key=lambda x: x[1]
-)
+## Regenerating the demo
+
+The animated GIF above is rendered from [Remotion](https://github.com/remotion-dev/remotion) components in [`demo/`](./demo). To regenerate:
+
+```bash
+cd demo
+npm install
+npm run render
+# writes ../demo.gif (~2 MB, 12s, 960×720)
 ```
 
-## 🏗️ Model Modes
+`npm run studio` opens Remotion Studio for live editing at http://localhost:3000.
 
-The `mode` field indicates the model's primary function:
+## Contributing
 
-- `chat` - Text generation and conversation
-- `embedding` - Vector embeddings for semantic search
-- `image_generation` - Text-to-image generation
-- `audio_transcription` - Speech-to-text
-- `audio_speech` - Text-to-speech
-- `completion` - Text completion (legacy)
-- `moderation` - Content moderation
-- `rerank` - Document reranking
-- `search` - Search functionality
+This repo mirrors LiteLLM as the source of truth. To add or correct a model, prefer opening a PR against [LiteLLM upstream](https://github.com/BerriAI/litellm); changes flow into this repo on the next sync. For repo-local changes (UI tweaks, README fixes, demo improvements), regular PRs against `main` are welcome.
 
-## 📚 Provider Coverage
+When editing the JSON directly:
+- Use scientific notation for tiny floats (`1e-06`, not `0.000001`).
+- Match the provider's official model identifier.
+- Add `deprecation_date` in `YYYY-MM-DD` for deprecated models.
+- Validate with `jq empty model_prices_and_context_windows.json` before pushing.
 
-The database includes models from:
-- OpenAI (GPT-4, GPT-3.5, DALL-E, Whisper, etc.)
-- Anthropic (Claude models)
-- Google (Gemini, PaLM)
-- AWS Bedrock (Multiple providers)
-- Azure OpenAI
-- Cohere
-- AI21 Labs
-- Replicate
-- Together AI
-- Fireworks AI
-- Groq
-- Mistral AI
-- And many more...
+## License
 
-## 🤝 Contributing
+Data is provided as-is for informational use. Verify pricing and capabilities against official provider documentation before making business decisions.
 
-Contributions are welcome! To add or update model information:
+---
 
-1. Fork the repository
-2. Update `model_prices_and_context_windows.json`
-3. Ensure the JSON is valid and follows the existing structure
-4. Submit a pull request with a description of changes
-
-### Data Guidelines
-
-- Use scientific notation for small decimals (e.g., `1e-06` instead of `0.000001`)
-- Include `source` field with documentation URLs when available
-- Add `deprecation_date` in `YYYY-MM-DD` format for deprecated models
-- Use consistent naming conventions matching the provider's official names
-
-## 📝 License
-
-This data is provided for informational purposes. Please verify pricing and capabilities with official provider documentation before making business decisions.
-
-## 🔗 Related Projects
-
-This database is designed to work with [LiteLLM](https://github.com/BerriAI/litellm) and similar LLM abstraction libraries.
-
-## ⚠️ Disclaimer
-
-Model pricing and capabilities change frequently. While we strive to keep this database up-to-date, always verify current pricing and features with the official provider documentation.
-
-Last updated: May 2026 (synced from [BerriAI/litellm](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json))
+_Synced from [BerriAI/litellm](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) · last updated May 2026._
