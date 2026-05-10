@@ -598,6 +598,7 @@ body[data-density="compact"] .mc-stat { padding: 8px 10px; }
   display: flex; align-items: center; justify-content: center;
   padding: 24px;
 }
+[hidden] { display: none !important; }
 .modal-backdrop {
   position: absolute; inset: 0;
   background: rgba(0,0,0,0.5);
