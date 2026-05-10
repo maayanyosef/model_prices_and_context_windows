@@ -13,7 +13,6 @@ A searchable, comparable database of **2,700+ AI models** — pricing, context w
 
 > **Live browser →** https://maayanyosef.github.io/model_prices_and_context_windows/
 > **Data file →** [`model_prices_and_context_windows.json`](./model_prices_and_context_windows.json)
-> **Demo source →** [`demo/`](./demo) (Remotion)
 
 ---
 
@@ -142,4 +141,4 @@ Data is provided as-is for informational use. Verify pricing and capabilities ag
 
 ---
 
-_Synced from [BerriAI/litellm](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) · last updated May 2026._
+_ last updated May 2026._
