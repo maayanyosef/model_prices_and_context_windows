@@ -743,8 +743,8 @@ body[data-density="compact"] .mc-stat { padding: 8px 10px; }
 .lb-head .lb-sub { font-size: 12px; color: var(--muted); }
 .lb-row {
   display: grid;
-  grid-template-columns: 22px 1fr auto;
-  gap: 12px;
+  grid-template-columns: 22px 22px 1fr auto;
+  gap: 10px;
   align-items: center;
   padding: 8px 0;
   border-bottom: 1px solid var(--hairline);
@@ -957,4 +957,19 @@ body[data-density="compact"] .mc-stat { padding: 8px 10px; }
 .mc-head .pa { margin-top: 2px; }
 .row-name .pa { margin-right: 8px; vertical-align: -5px; }
 .lb-row .pa { margin-right: 8px; }
-.detail-panel .modal-head .pa { margin-right: 12px; }
+.detail-panel .modal-head > div { display: flex; align-items: center; gap: 14px; }
+.detail-panel .modal-head > div > .pa-lg { flex-shrink: 0; }
+
+/* Card head: avatar + text + pin button */
+.model-card .mc-head { display: flex; align-items: flex-start; gap: 10px; }
+.model-card .mc-head-text { flex: 1; min-width: 0; }
+.model-card .mc-pin { flex-shrink: 0; }
+
+/* Stats dashboard: provider avatar inline with model name */
+.sd-sub { display: flex; align-items: center; gap: 6px; }
+.sd-sub .pa { width: 18px; height: 18px; font-size: 10px; }
+.sd-sub .sd-name { font-family: var(--font-mono); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; }
+
+/* Table row name: avatar inline */
+.row-name { display: flex; align-items: center; gap: 8px; }
+.row-name .pa { vertical-align: middle; margin-right: 0; }

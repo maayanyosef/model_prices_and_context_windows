@@ -214,6 +214,87 @@ function render() {
   renderCompareTray();
 }
 
+/* ============ Stats dashboard (OpenRouter-inspired) ============ */
+function makeAvatarNode(provider) {
+  const span = document.createElement('span');
+  const key = (provider || '?').toString();
+  const display = PROVIDER_PRETTY[provider] || key;
+  const letter = display.replace(/^[^A-Za-z0-9]+/, '').charAt(0).toUpperCase() || '?';
+  let h = 0;
+  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) | 0;
+  const color = AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+  span.className = 'pa';
+  span.style.background = color;
+  span.title = prettyProvider(provider);
+  span.setAttribute('aria-hidden', 'true');
+  span.textContent = letter;
+  return span;
+}
+
+function setSubWithAvatar(elId, provider, name) {
+  const el = $('#' + elId);
+  el.textContent = '';
+  el.appendChild(makeAvatarNode(provider));
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'sd-name';
+  nameSpan.textContent = name;
+  el.appendChild(nameSpan);
+}
+
+function renderStats() {
+  if (!$('#statsDash')) return;
+  const all = Object.entries(state.all);
+  const providers = new Set(all.map(([_, i]) => i.litellm_provider).filter(Boolean));
+  const modes = new Set(all.map(([_, i]) => i.mode).filter(Boolean));
+  const chat = all.filter(([_, i]) => i.mode === 'chat');
+
+  $('#sdModels').textContent = all.length.toLocaleString();
+  $('#sdModelsSub').textContent = `${chat.length.toLocaleString()} chat · ${modes.size} modes`;
+  $('#sdProviders').textContent = providers.size;
+  $('#sdProvidersSub').textContent = 'unique LLM providers';
+
+  const wireCard = (cardId, name) => {
+    const card = $('#' + cardId);
+    if (!card) return;
+    card.dataset.modelName = name;
+    card.classList.add('clickable');
+    if (!card._wired) {
+      card._wired = true;
+      card.addEventListener('click', () => {
+        const m = card.dataset.modelName;
+        if (m && state.all[m]) openDetail(m);
+      });
+    }
+  };
+
+  const cheapest = chat.filter(([_, i]) => i.input_cost_per_token > 0)
+    .sort((a, b) => a[1].input_cost_per_token - b[1].input_cost_per_token)[0];
+  if (cheapest) {
+    const [n, i] = cheapest;
+    $('#sdCheap').textContent = fmtMoney(pricePerUnit(i.input_cost_per_token)) + ' ' + priceLabel();
+    setSubWithAvatar('sdCheapSub', i.litellm_provider, n);
+    wireCard('sdCheapCard', n);
+  }
+
+  const bigCtx = chat.filter(([_, i]) => (i.max_input_tokens || i.max_tokens))
+    .sort((a, b) => (b[1].max_input_tokens || b[1].max_tokens) - (a[1].max_input_tokens || a[1].max_tokens))[0];
+  if (bigCtx) {
+    const [n, i] = bigCtx;
+    $('#sdCtx').textContent = fmtTokens(i.max_input_tokens || i.max_tokens);
+    setSubWithAvatar('sdCtxSub', i.litellm_provider, n);
+    wireCard('sdCtxCard', n);
+  }
+
+  const mostCap = chat.map(([n, i]) => [n, i, countCaps(i)])
+    .sort((a, b) => b[2] - a[2] || ((a[1].input_cost_per_token || Infinity) - (b[1].input_cost_per_token || Infinity)))[0];
+  if (mostCap) {
+    const [n, i, c] = mostCap;
+    $('#sdCaps').textContent = `${c}/${CAP_KEYS.length}`;
+    setSubWithAvatar('sdCapsSub', i.litellm_provider, n);
+    wireCard('sdCapsCard', n);
+  }
+}
+
 function renderCards() {
   const grid = $('#cardsView');
   const slice = state.filtered.slice(0, state.page * state.pageSize);
@@ -263,7 +344,8 @@ function modelCard(name, info) {
 
   el.innerHTML = `
     <div class="mc-head">
-      <div>
+      ${providerAvatar(info.litellm_provider)}
+      <div class="mc-head-text">
         <h3 class="mc-name">${escape(name)}</h3>
         <div class="mc-provider">${escape(prettyProvider(info.litellm_provider))}${info.mode ? ' · ' + info.mode.replace(/_/g, ' ') : ''}</div>
       </div>
@@ -316,7 +398,7 @@ function modelRow(name, info) {
   const pinned = state.pinned.has(name);
 
   tr.innerHTML = `
-    <td class="row-name">${escape(name)}</td>
+    <td class="row-name">${providerAvatar(info.litellm_provider)}<span>${escape(name)}</span></td>
     <td>${escape(prettyProvider(info.litellm_provider))}</td>
     <td>${info.mode ? info.mode.replace(/_/g, ' ') : '—'}</td>
     <td class="num">${inP === null ? '—' : fmtMoney(inP)}</td>
@@ -469,6 +551,19 @@ function openCompare() {
 function openDetail(name) {
   const info = state.all[name];
   if (!info) return;
+
+  // Detail head: avatar + name + provider sub-line. Mount avatar once.
+  const head = $('#detailModal .modal-head > div');
+  let avatar = head.querySelector(':scope > .pa');
+  if (!avatar) {
+    avatar = makeAvatarNode(info.litellm_provider);
+    avatar.classList.add('pa-lg');
+    head.insertBefore(avatar, head.firstChild);
+  } else {
+    const fresh = makeAvatarNode(info.litellm_provider);
+    fresh.classList.add('pa-lg');
+    head.replaceChild(fresh, avatar);
+  }
   $('#detailName').textContent = name;
   $('#detailProvider').textContent = prettyProvider(info.litellm_provider) + (info.mode ? ' · ' + info.mode.replace(/_/g, ' ') : '');
 
@@ -664,7 +759,11 @@ function renderLeaderboards() {
     const card = document.createElement('div');
     card.className = 'lb-card';
     card.innerHTML = `<div class="lb-head"><h3>${b.title}</h3><span class="lb-sub">${b.sub}</span></div>` +
-      b.list.map(([n, v], idx) => `<div class="lb-row"><div class="lb-rank ${idx === 0 ? 'gold' : ''}">${String(idx + 1).padStart(2, '0')}</div><div class="lb-name" title="${escape(n)}">${escape(n)}</div><div class="lb-val">${escape(v)}</div></div>`).join('');
+      b.list.map(([n, v], idx) => {
+        const info = state.all[n];
+        const avatar = info && info.litellm_provider ? providerAvatar(info.litellm_provider) : '';
+        return `<div class="lb-row"><div class="lb-rank ${idx === 0 ? 'gold' : ''}">${String(idx + 1).padStart(2, '0')}</div>${avatar}<div class="lb-name" title="${escape(n)}">${escape(n)}</div><div class="lb-val">${escape(v)}</div></div>`;
+      }).join('');
     // make rows clickable to open detail
     grid.appendChild(card);
     card.querySelectorAll('.lb-row').forEach((row, idx) => {
