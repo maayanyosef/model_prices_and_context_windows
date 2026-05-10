@@ -25,15 +25,15 @@ The main data file is `model_prices_and_context_windows.json`, which contains a 
 
 ### Common Fields
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| `litellm_provider` | The LLM provider | `"openai"`, `"anthropic"`, `"bedrock"` |
-| `mode` | Model type | `"chat"`, `"embedding"`, `"image_generation"` |
-| `max_tokens` | Maximum context window | `128000` |
-| `max_input_tokens` | Maximum input tokens | `128000` |
-| `max_output_tokens` | Maximum output tokens | `4096` |
-| `input_cost_per_token` | Cost per input token | `0.000003` |
-| `output_cost_per_token` | Cost per output token | `0.000015` |
+| Field                   | Description            | Example                                       |
+|-------------------------|------------------------|-----------------------------------------------|
+| `litellm_provider`      | The LLM provider       | `"openai"`, `"anthropic"`, `"bedrock"`        |
+| `mode`                  | Model type             | `"chat"`, `"embedding"`, `"image_generation"` |
+| `max_tokens`            | Maximum context window | `128000`                                      |
+| `max_input_tokens`      | Maximum input tokens   | `128000`                                      |
+| `max_output_tokens`     | Maximum output tokens  | `4096`                                        |
+| `input_cost_per_token`  | Cost per input token   | `0.000003`                                    |
+| `output_cost_per_token` | Cost per output token  | `0.000015`                                    |
 
 ### Capability Fields (boolean)
 
@@ -225,4 +225,4 @@ This database is designed to work with [LiteLLM](https://github.com/BerriAI/lite
 
 Model pricing and capabilities change frequently. While we strive to keep this database up-to-date, always verify current pricing and features with the official provider documentation.
 
-Last updated: December 2024
+Last updated: May 2026 (synced from [BerriAI/litellm](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json))
