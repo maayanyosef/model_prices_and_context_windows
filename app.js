@@ -61,6 +61,22 @@ const PROVIDER_PRETTY = {
 };
 const prettyProvider = (p) => PROVIDER_PRETTY[p] || (p || '—').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).replace(/Vertex Ai/g, 'Vertex AI');
 
+// Deterministic colored initial chip per provider (OpenRouter-style favicon-ish marker)
+const AVATAR_COLORS = ['#0071e3','#5e5ce6','#30d158','#ff9f0a','#ff453a','#bf5af2','#64d2ff','#ffd60a','#ff6482','#a2845e'];
+function providerAvatar(provider, large = false) {
+  const key = (provider || '?').toString();
+  const display = PROVIDER_PRETTY[provider] || key;
+  const letter = display.replace(/^[^A-Za-z0-9]+/, '').charAt(0).toUpperCase() || '?';
+  let h = 0;
+  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) | 0;
+  const color = AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+  return `<span class="pa${large ? ' pa-lg' : ''}" style="background:${color}" title="${escape(prettyProvider(provider))}" aria-hidden="true">${escape(letter)}</span>`;
+}
+
+// Count of capability flags — for "most capable" stat
+const CAP_KEYS = ['supports_function_calling','supports_vision','supports_audio_input','supports_audio_output','supports_reasoning','supports_prompt_caching','supports_response_schema','supports_web_search','supports_pdf_input','supports_system_messages','supports_parallel_function_calling','supports_tool_choice'];
+const countCaps = (info) => CAP_KEYS.reduce((n, k) => n + (info[k] ? 1 : 0), 0);
+
 // Famous/popular models score-boost for "featured" sort
 const FEATURED_PRIORITY = [
   /^gpt-5/i, /^gpt-4o/i, /^o3/, /^o1/, /^claude-(opus|sonnet|haiku|3|4)/i,
@@ -175,6 +191,7 @@ function sortList(list) {
 
 /* ============ Render ============ */
 function render() {
+  renderStats();
   applyFilter();
   $('#resultCount').textContent = `${state.filtered.length.toLocaleString()} results`;
   if (state.filtered.length === 0) {

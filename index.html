@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Model Browser</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230071e3'/%3E%3Crect x='14' y='34' width='8' height='18' rx='2' fill='%23fff'/%3E%3Crect x='28' y='22' width='8' height='30' rx='2' fill='%23fff'/%3E%3Crect x='42' y='12' width='8' height='40' rx='2' fill='%23fff'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet" />
@@ -41,7 +42,7 @@
   <main id="main">
 
     <!-- ============ BROWSE VIEW ============ -->
-    <section class="view view-browse" data-view="browse">
+    <section class="view view-browse" data-view="browse" id="browse">
 
       <!-- Hero -->
       <div class="hero">
@@ -50,7 +51,7 @@
         <div class="hero-search-wrap">
           <div class="hero-search">
             <svg class="hero-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-            <input id="heroSearch" type="text" placeholder="Try “claude”, “gpt-5”, “vision”, “cheap embedding”…" autocomplete="off" />
+            <input id="heroSearch" type="text" aria-label="Search models by name, provider, or capability" placeholder="Try “claude”, “gpt-5”, “vision”, “cheap embedding”…" autocomplete="off" />
             <button class="hero-clear" id="heroClear" aria-label="Clear">✕</button>
           </div>
           <div class="hero-suggest" id="heroSuggest" hidden></div>
@@ -65,16 +66,45 @@
         </div>
       </div>
 
+      <!-- Stats dashboard (OpenRouter-style metric cards) -->
+      <div class="stats-dash" id="statsDash" aria-label="Dataset overview">
+        <div class="sd-card" data-stat="models">
+          <div class="sd-eyebrow">Total models</div>
+          <div class="sd-value" id="sdModels">—</div>
+          <div class="sd-sub" id="sdModelsSub">—</div>
+        </div>
+        <div class="sd-card" data-stat="providers">
+          <div class="sd-eyebrow">Providers</div>
+          <div class="sd-value" id="sdProviders">—</div>
+          <div class="sd-sub" id="sdProvidersSub">—</div>
+        </div>
+        <div class="sd-card" data-stat="cheap" id="sdCheapCard">
+          <div class="sd-eyebrow">Cheapest chat</div>
+          <div class="sd-value" id="sdCheap">—</div>
+          <div class="sd-sub" id="sdCheapSub">—</div>
+        </div>
+        <div class="sd-card" data-stat="ctx" id="sdCtxCard">
+          <div class="sd-eyebrow">Biggest context</div>
+          <div class="sd-value" id="sdCtx">—</div>
+          <div class="sd-sub" id="sdCtxSub">—</div>
+        </div>
+        <div class="sd-card" data-stat="caps" id="sdCapsCard">
+          <div class="sd-eyebrow">Most capable</div>
+          <div class="sd-value" id="sdCaps">—</div>
+          <div class="sd-sub" id="sdCapsSub">—</div>
+        </div>
+      </div>
+
       <!-- Filters bar -->
       <div class="filters">
         <div class="filters-left">
-          <select id="providerFilter" class="select">
+          <select id="providerFilter" class="select" aria-label="Filter by provider">
             <option value="">All providers</option>
           </select>
-          <select id="modeFilter" class="select">
+          <select id="modeFilter" class="select" aria-label="Filter by mode">
             <option value="">All modes</option>
           </select>
-          <select id="sortBy" class="select">
+          <select id="sortBy" class="select" aria-label="Sort models">
             <option value="featured">Featured</option>
             <option value="name">Name A–Z</option>
             <option value="input_asc">Input cost ↑</option>
@@ -153,24 +183,24 @@
       <div class="calc-grid">
         <div class="calc-inputs card">
           <div class="calc-row">
-            <label>Input tokens</label>
+            <label for="calcIn">Input tokens</label>
             <div class="range-row">
-              <input type="range" id="calcIn" min="0" max="10000000" step="1000" value="100000" />
-              <input type="number" id="calcInNum" value="100000" />
+              <input type="range" id="calcIn" aria-label="Input tokens slider" min="0" max="10000000" step="1000" value="100000" />
+              <input type="number" id="calcInNum" aria-label="Input tokens value" value="100000" />
             </div>
           </div>
           <div class="calc-row">
-            <label>Output tokens</label>
+            <label for="calcOut">Output tokens</label>
             <div class="range-row">
-              <input type="range" id="calcOut" min="0" max="10000000" step="1000" value="20000" />
-              <input type="number" id="calcOutNum" value="20000" />
+              <input type="range" id="calcOut" aria-label="Output tokens slider" min="0" max="10000000" step="1000" value="20000" />
+              <input type="number" id="calcOutNum" aria-label="Output tokens value" value="20000" />
             </div>
           </div>
           <div class="calc-row">
-            <label>Calls per month</label>
+            <label for="calcCalls">Calls per month</label>
             <div class="range-row">
-              <input type="range" id="calcCalls" min="1" max="1000000" step="100" value="1000" />
-              <input type="number" id="calcCallsNum" value="1000" />
+              <input type="range" id="calcCalls" aria-label="Calls per month slider" min="1" max="1000000" step="100" value="1000" />
+              <input type="number" id="calcCallsNum" aria-label="Calls per month value" value="1000" />
             </div>
           </div>
           <div class="calc-row">
@@ -279,8 +309,8 @@
         </div>
       </div>
       <div class="tweak-row">
-        <label>Default sort</label>
-        <select id="tweakSort" class="select">
+        <label for="tweakSort">Default sort</label>
+        <select id="tweakSort" class="select" aria-label="Default sort">
           <option value="featured">Featured</option>
           <option value="name">Name A–Z</option>
           <option value="input_asc">Input cost ↑</option>

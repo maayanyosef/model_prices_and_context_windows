@@ -880,3 +880,81 @@ body[data-density="compact"] .mc-stat { padding: 8px 10px; }
   .modal { padding: 12px; }
   .modal-head { padding: 16px 20px; }
 }
+
+/* ============ Stats dashboard (OpenRouter-inspired) ============ */
+.stats-dash {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 28px;
+}
+.sd-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: 18px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.sd-card[role="button"], .sd-card.clickable { cursor: pointer; }
+.sd-card:hover { border-color: var(--accent); }
+.sd-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--muted);
+}
+.sd-value {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sd-value.is-mono { font-family: var(--font-mono); font-size: 18px; }
+.sd-sub {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 1100px) {
+  .stats-dash { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sd-card:nth-child(n+4) { display: none; }
+}
+@media (max-width: 640px) {
+  .stats-dash { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .sd-card { padding: 14px; }
+  .sd-card:nth-child(n+3) { display: none; }
+  .sd-value { font-size: 22px; }
+}
+
+/* ============ Provider avatar chip ============ */
+.pa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  flex-shrink: 0;
+  line-height: 1;
+  font-family: var(--font);
+}
+.pa-lg { width: 36px; height: 36px; font-size: 16px; }
+.mc-head { gap: 10px; }
+.mc-head .pa { margin-top: 2px; }
+.row-name .pa { margin-right: 8px; vertical-align: -5px; }
+.lb-row .pa { margin-right: 8px; }
+.detail-panel .modal-head .pa { margin-right: 12px; }
