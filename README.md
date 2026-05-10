@@ -141,4 +141,4 @@ Data is provided as-is for informational use. Verify pricing and capabilities ag
 
 ---
 
-_ last updated May 2026._
+_last updated May 2026._
